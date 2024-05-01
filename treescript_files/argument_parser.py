@@ -81,7 +81,7 @@ def _define_arguments() -> ArgumentParser:
     )
     parser.add_argument(
         '--parent',
-        type=str | None,
+        type=str,
         default=None,
         help='The Parent Path to prefix files with.',
     )
