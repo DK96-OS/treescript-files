@@ -1,6 +1,7 @@
 """Testing Tree Reader and Process Input Data Method
 """
 import pytest
+
 from treescript_files.input_data import InputData
 from treescript_files.tree_reader import process_input_data
 
@@ -36,7 +37,7 @@ def test_process_input_data_two_files():
     assert result[1] == 'src/file2.py'
 
 
-def test_process_input_data_two_files():
+def test_process_input_data_two_files_parent_path():
     input_data = InputData(
         tree_input='src/\n  file.py\n  file2.py',
         parent_path='module/'
