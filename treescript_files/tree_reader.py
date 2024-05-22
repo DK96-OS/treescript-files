@@ -11,6 +11,12 @@ def process_input_data(
     input_data: InputData,
 ) -> Generator[str, None, None]:
     """Process the Input Data and set-up file path generators.
+
+    Parameters:
+    - input_data (InputData): The program input data.
+
+    Returns:
+    Generator[str] - Yields the strings.
     """
     file_generator = _process_tree_data(input_data.get_tree_data())
     if (parent := input_data.parent_path) is not None:
