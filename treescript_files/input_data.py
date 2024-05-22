@@ -15,10 +15,12 @@ class InputData:
     Fields:
     - tree_input (str): The Tree Input to the program.
     - parent_path (str | None): The Parent Path to prefix, or None.
+    - separator (str): The separator between elements in the program output.
     """
 
     tree_input: str
     parent_path: str | None
+    separator : str = '\n'
 
     def get_tree_data(self) -> Generator[TreeData, None, None]:
         """
@@ -37,5 +39,6 @@ def validate_arguments(argument_data: ArgumentData) -> InputData:
     """
     return InputData(
         tree_input=validate_input_file(argument_data.tree_file),
-        parent_path=argument_data.parent_path
+        parent_path=argument_data.parent_path,
+        separator=argument_data.separator,
     )

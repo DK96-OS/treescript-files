@@ -17,7 +17,9 @@ class ArgumentData:
     Fields:
     - tree_file (str): The file containing the Tree.
     - parent_path (str | None): The parent path to prefix files with.
+    - separator (str): The separator to use in the program output.
     """
 
     tree_file: str
     parent_path: str | None
+    separator: str 

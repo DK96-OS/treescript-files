@@ -29,36 +29,56 @@ def parse_arguments(args: Optional[list[str]] = None) -> ArgumentData:
         parsed_args = _define_arguments().parse_args(args)
     except SystemExit as e:
         exit("Unable to Parse Arguments.")
-    #
-    return _validate_arguments(
-        parsed_args.tree_file,
-        parsed_args.parent,
-    )
+    return _validate_arguments(parsed_args)
+
+
+def _determine_output_separator(
+    parsed_args,
+) -> str:
+    """
+    Given the parsed arguments object, determine the separator.
+
+    Parameters:
+    - parsed_argument : The object returned by the ArgumentParser.
+
+    Returns:
+    str - The separator to use between elements in the output.
+    """
+    if parsed_args.space:
+        return ' '
+    if parsed_args.tab:
+        return '\t'
+    if parsed_args.comma:
+        return ','
+    return '\n'
 
 
 def _validate_arguments(
-    tree_file: str,
-    parent_path: str | None,
+    parsed_args,
 ) -> ArgumentData:
     """
     Checks the values received from the ArgParser.
         Uses Validate Name method from StringValidation.
 
     Parameters:
-    - tree_file_name (str): The file name of the tree input.
+    - parsed_args : The object returned by ArgumentParser.
 
     Returns:
     ArgumentData - A DataClass of syntactically correct arguments.
     """
+    tree_file = parsed_args.tree_file
+    parent_path = parsed_args.parent
     # Validate Tree Name Syntax
     if not validate_name(tree_file):
         exit("The Tree File argument was invalid.")
     if parent_path is not None:
         if not validate_name(parent_path):
             exit("The Parent Path argument was invalid.")
+    #
     return ArgumentData(
         tree_file=tree_file,
         parent_path=parent_path,
+        separator=_determine_output_separator(parsed_args)
     )
 
 
@@ -71,7 +91,7 @@ def _define_arguments() -> ArgumentParser:
     argparse.ArgumentParser - An instance with all supported Arguments.
     """
     parser = ArgumentParser(
-        description="Tree Script Builder"
+        description="TreeScript Files",
     )
     # Required argument
     parser.add_argument(
@@ -79,10 +99,29 @@ def _define_arguments() -> ArgumentParser:
         type=str,
         help='The File containing the Tree Node Structure'
     )
+    # Optional Arguments
     parser.add_argument(
         '--parent',
         type=str,
         default=None,
         help='The Parent Path to prefix files with.',
+    )
+    parser.add_argument(
+        '--space', '-s',
+        action='store_true',
+        default=False,
+        help='Use a space as the element separator.',
+    )
+    parser.add_argument(
+        '--comma', '-c',
+        action='store_true',
+        default=False,
+        help='Use a comma as the element separator.',
+    )
+    parser.add_argument(
+        '--tab', '-t',
+        action='store_true',
+        default=False,
+        help='Use a tab as the element separator.',
     )
     return parser
