@@ -79,7 +79,7 @@ def test_process_line_file_odd_spaces_raises_exit(test_input):
     try:
         _process_line(1, test_input)
         assert False
-    except SystemExit as e:
+    except SystemExit:
         assert True
 
 
@@ -129,7 +129,7 @@ def test_process_line_dir_odd_spaces_raises_exit(test_input):
     try:
         _process_line(1, test_input)
         assert False
-    except SystemExit as e:
+    except SystemExit:
         assert True
 
 
@@ -146,7 +146,7 @@ def test_process_line_parent_dir_raise_exit(test_input):
     try:
         _process_line(1, test_input)
         assert False
-    except SystemExit as e:
+    except SystemExit:
         assert True
 
 
@@ -163,7 +163,7 @@ def test_process_line_current_dir_raise_exit(test_input):
     try:
         _process_line(1, test_input)
         assert False
-    except SystemExit as e:
+    except SystemExit:
         assert True
 
 
@@ -242,7 +242,7 @@ src/
     try:
         next(generator)
         assert False
-    except StopIteration as e:
+    except StopIteration:
         assert True
 
 
@@ -259,7 +259,7 @@ def test_read_input_tree_files_including_comment_yields_data():
     try:
         next(generator)
         assert False
-    except StopIteration as e:
+    except StopIteration:
         assert True
 
 
@@ -276,7 +276,7 @@ src/
     try:
         next(generator)
         assert False
-    except StopIteration as e:
+    except StopIteration:
         assert True
 
 
@@ -293,7 +293,7 @@ src/
     try:
         next(generator)
         assert False
-    except SystemExit as e:
+    except SystemExit:
         assert True
 
 
@@ -310,5 +310,5 @@ def test_read_input_tree_odd_spaces_raises_exit(test_input):
     try:
         next(generator)
         assert False
-    except SystemExit as e:
+    except SystemExit:
         assert True

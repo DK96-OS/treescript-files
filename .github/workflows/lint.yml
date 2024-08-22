@@ -1,0 +1,33 @@
+## Code Linting
+
+name: Code Linting
+
+on:
+  pull_request:
+    branches: [main]
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install Linting Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install ruff --no-deps
+
+      - name: Show Files To Be Linted
+        run: ruff check --show-files
+
+      - name: Ruff Statistics
+        run: ruff check --statistics
+
+      - name: Ruff Check Grouped Format
+        run: ruff check --output-format=grouped

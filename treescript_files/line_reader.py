@@ -6,6 +6,7 @@ The Default Input Reader.
     The Directory Boolean indicates whether the line represents a Directory.
     The Name String is the name of the line.
 """
+
 from itertools import groupby
 from sys import exit
 from typing import Generator
@@ -14,7 +15,7 @@ from .string_validation import validate_dir_name, validate_name
 from .tree_data import TreeData
 
 
-SPACE_CHARS = (' ', ' ', ' ', ' ')
+SPACE_CHARS = (" ", " ", " ", " ")
 
 
 def read_input_tree(input_tree_data: str) -> Generator[TreeData, None, None]:
@@ -33,15 +34,15 @@ def read_input_tree(input_tree_data: str) -> Generator[TreeData, None, None]:
     line_number = 1
     for is_newline, group in groupby(input_tree_data, lambda x: x == "\n"):
         if not is_newline:
-            line = ''.join(group)
+            line = "".join(group)
             line_stripped = line.lstrip()
             if len(line_stripped) == 0:
                 continue
-            elif line_stripped.startswith('#'):
+            elif line_stripped.startswith("#"):
                 continue
             yield _process_line(line_number, line)
         else:
-            line_number += 1 #todo: Line number increase by size of group
+            line_number += 1  # todo: Line number increase by size of group
 
 
 def _process_line(line_number: int, line: str) -> TreeData:
@@ -81,15 +82,9 @@ def _process_line(line_number: int, line: str) -> TreeData:
     # Validate the Node Name and Type.
     node_info = _validate_node_name(name)
     if node_info is None:
-        exit(f'Invalid Node on Line: {line_number}')
+        exit(f"Invalid Node on Line: {line_number}")
     (is_dir, name) = node_info
-    return TreeData(
-        line_number,
-        depth,
-        is_dir,
-        name,
-        data_label
-    )
+    return TreeData(line_number, depth, is_dir, name, data_label)
 
 
 def _validate_node_name(node_name: str) -> tuple[bool, str] | None:
@@ -110,7 +105,7 @@ def _validate_node_name(node_name: str) -> tuple[bool, str] | None:
         if (dir_name := validate_dir_name(node_name)) is not None:
             return (True, dir_name)
         # Fall-Through to File Node
-    except ValueError as e:
+    except ValueError:
         # An error in the dir name, such that it cannot be a file either
         return None
     # Is a File
@@ -130,9 +125,8 @@ def _calculate_depth(line: str) -> int:
     int: The depth of the line in the tree structure, or -1 if space count is invalid.
     """
     from itertools import takewhile
-    space_count = len(list(
-        takewhile(lambda c: c in SPACE_CHARS, line)
-    ))
+
+    space_count = len(list(takewhile(lambda c: c in SPACE_CHARS, line)))
     depth = space_count >> 1
     if depth << 1 == space_count:
         return depth

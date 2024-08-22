@@ -1,6 +1,7 @@
 """File Validation Methods.
-    These Methods all raise SystemExit exceptions.
+These Methods all raise SystemExit exceptions.
 """
+
 from pathlib import Path
 from sys import exit
 
@@ -25,7 +26,7 @@ def validate_input_file(file_name: str) -> str:
         exit("The Input File does not Exist.")
     try:
         data = file_path.read_text()
-    except IOError as e:
+    except IOError:
         exit("Failed to Read from File.")
     if validate_name(data):
         return data
