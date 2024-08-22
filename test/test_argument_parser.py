@@ -49,7 +49,7 @@ def test_parse_arguments_parent_path_missing_flag_raises_exit(test_input):
     try:
         parse_arguments(test_input)
         assert False
-    except SystemExit as e:
+    except SystemExit:
         assert True
 
 
@@ -66,7 +66,7 @@ def test_parse_arguments_no_tree_raises_exit(test_input):
     try:
         parse_arguments(test_input)
         assert False
-    except SystemExit as e:
+    except SystemExit:
         assert True
 
 
@@ -82,7 +82,7 @@ def test_parse_arguments_invalid_args_raises_exit(test_input):
     try:
         parse_arguments(test_input)
         assert False
-    except SystemExit as e:
+    except SystemExit:
         assert True
 
 
@@ -90,7 +90,7 @@ def test_validate_arguments_empty_tree_file_name_raises_type_error():
     try:
         _validate_arguments('', None)
         assert False
-    except TypeError as e:
+    except TypeError:
         assert True
 
 
@@ -98,5 +98,5 @@ def test_validate_arguments_empty_parent_path_raises_type_error():
     try:
         _validate_arguments('tree', '')
         assert False
-    except TypeError as e:
+    except TypeError:
         assert True
