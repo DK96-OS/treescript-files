@@ -1,18 +1,15 @@
-""" Path Stack Management.
-"""
-from pathlib import Path
+"""Path Stack Management."""
 
 
 class PathStack:
-    """ A Stack of Directory names in a Path.
-    """
+    """A Stack of Directory names in a Path."""
 
     def __init__(self):
         # The Stack of Directories in the Path.
         self._stack = []
 
     def push(self, directory_name: str):
-        """ Push a directory to the Path Stack.
+        """Push a directory to the Path Stack.
 
         Parameters:
         - directory_name (str): The name of the next directory in the Path Stack.
