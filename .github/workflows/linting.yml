@@ -28,6 +28,7 @@ jobs:
 
       - name: Ruff Statistics
         run: ruff check --statistics
+        continue-on-error: true
 
       - name: Ruff Check Grouped Format
         run: ruff check --output-format=grouped
