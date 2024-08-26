@@ -145,9 +145,10 @@ def test_process_line_dir_odd_spaces_raises_exit(test_input):
 def test_process_line_parent_dir_raise_exit(test_input):
     try:
         _process_line(1, test_input)
-        assert False
+        raised_exit = False
     except SystemExit:
-        assert True
+        raised_exit = True
+    assert raised_exit
 
 
 @pytest.mark.parametrize(
@@ -162,9 +163,10 @@ def test_process_line_parent_dir_raise_exit(test_input):
 def test_process_line_current_dir_raise_exit(test_input):
     try:
         _process_line(1, test_input)
-        assert False
+        raised_exit = False
     except SystemExit:
-        assert True
+        raised_exit = True
+    assert raised_exit
 
 
 @pytest.mark.parametrize(
