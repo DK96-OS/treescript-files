@@ -4,7 +4,6 @@
 """
 from argparse import ArgumentParser
 from sys import exit
-from typing import Optional
 
 from .argument_data import ArgumentData
 from .string_validation import validate_name
