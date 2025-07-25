@@ -2,9 +2,9 @@
 """
 from typing import Generator
 
-from treescript_files.data.input_data import InputData
-from .path_stack import PathStack
-from .tree_data import TreeData
+from treescript_files.input_data import InputData
+from treescript_files.path_stack import PathStack
+from treescript_files.tree_data import TreeData
 
 
 def process_input_data(
