@@ -33,7 +33,7 @@ jobs:
         run: python -m build --sdist --wheel --outdir dist/
 
       - name: Sign Distributions
-        uses: dk96-os/gh-action-sigstore-python@v3.1-dk96-os
+        uses: dk96-os/gh-action-sigstore-python@cf654f54962bafc7152d15da33e1015d8e913e2a # v3.2.7
         with:
           inputs: >-
             ./dist/*.tar.gz
@@ -52,6 +52,6 @@ jobs:
           cd ../
 
       - name: Publish package distributions to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
+        uses: pypa/gh-action-pypi-publish@76f52bc884231f62b9a034ebfe128415bbaabdfc # v1.12.4
         with:
           print-hash: true
