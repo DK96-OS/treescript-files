@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='utf-8'?>
+<sorting>
+    <changelist name="TreeScript Files Data Package" module="module">
+        <files first_dir="treescript_files" />
+        <files path_end="data" />
+        <files file_ext="py" />
+    </changelist>
+    <changelist name="TreeScript Files Input Package" module="module">
+        <files first_dir="treescript_files" />
+        <files path_end="input" />
+        <files file_ext="py" />
+    </changelist>
+    <changelist name="TreeScript Files Main Package" module="module">
+        <files first_dir="treescript_files" />
+        <files file_ext="py" />
+    </changelist>
+    <changelist name="Data Package Tests" module="module">
+        <files first_dir="test" />
+        <files path_end="data" />
+        <files file_ext="py" />
+    </changelist>
+    <changelist name="Input Package Tests" module="module">
+        <files first_dir="test" />
+        <files path_end="input" />
+        <files file_ext="py" />
+    </changelist>
+    <changelist name="Main Package Tests" module="module">
+        <files first_dir="test" />
+        <files path_end="treescript_files" />
+        <files file_ext="py" />
+    </changelist>
+    <changelist name="XML Package Tests" module="module">
+        <files first_dir="test" />
+        <files path_end="treescript_files/xml" />
+        <files file_ext="py" />
+    </changelist>
+    <changelist name="Test Fixtures and Data Providers" module="module">
+        <files first_dir="test" />
+        <files filename_prefix="conftest" />
+        <files file_ext="py" />
+    </changelist>
+    <changelist name="Changelists Config" module="hidden">
+        <files path_start=".changelists" />
+        <files filename_prefix="sort" />
+        <files file_ext="xml" />
+    </changelist>
+    <changelist name="GitHub Workflows" module="hidden">
+        <files path_start=".github/workflows" />
+        <files file_ext="yml" />
+    </changelist>
+    <changelist name="Documentation">
+        <files file_ext="md" />
+    </changelist>
+    <changelist name="Project Root">
+        <files first_dir="None" />
+    </changelist>
+</sorting>
