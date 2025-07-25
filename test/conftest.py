@@ -1,6 +1,5 @@
 """ Test Fixtures and Data Providers.
 """
-import pytest
 
 
 def create_depth(depth: int) -> str:
