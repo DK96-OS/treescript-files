@@ -5,8 +5,8 @@
 from argparse import ArgumentParser
 from sys import exit
 
-from .argument_data import ArgumentData
-from .string_validation import validate_name
+from treescript_files.argument_data import ArgumentData
+from treescript_files.string_validation import validate_name
 
 
 def parse_arguments(

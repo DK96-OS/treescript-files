@@ -4,7 +4,7 @@
 from pathlib import Path
 from sys import exit
 
-from .string_validation import validate_name
+from treescript_files.string_validation import validate_name
 
 
 def validate_input_file(
