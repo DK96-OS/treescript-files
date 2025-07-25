@@ -12,7 +12,6 @@ from .tree_data import TreeData
 @dataclass(frozen=True)
 class InputData:
     """ The Data Class Containing Program Input.
- - Is utilized across packages, and thus contained within the Data package instead of the Input package where it originates from.
 
 **Fields:**
  - tree_input (str): The Tree Input to the program.
