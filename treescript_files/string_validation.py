@@ -1,19 +1,18 @@
-"""String Validation Methods.
+""" String Validation Methods.
 """
 from typing import Literal
 
 
-def validate_name(argument) -> bool:
-    """
-    Determine whether an argument is a non-empty string.
-        Does not count whitespace.
-        Uses the strip method to remove empty space.
+def validate_name(argument: str) -> bool:
+    """ Determine whether an argument is a non-empty string.
+ - Does not count whitespace.
+ - Uses the strip method to remove empty space.
 
-    Parameters:
-    - argument (str) : The given argument.
+**Parameters:**
+ - argument (str): The given argument.
 
-    Returns:
-    bool - True if the argument qualifies as valid.
+**Returns:**
+ bool - True if the argument qualifies as valid.
     """
     if argument is None or not isinstance(argument, str):
         return False
@@ -23,18 +22,17 @@ def validate_name(argument) -> bool:
 
 
 def validate_dir_name(dir_name: str) -> str | None:
-    """
-    Determine that a directory is correctly formatted.
-        This method should be called once for each slash type.
+    """ Determine that a directory is correctly formatted.
+ - This method filters slash chars internally.
 
-    Parameters:
-    - dir_name (str): The given input to be validated.
+**Parameters:**
+ - dir_name (str): The given input to be validated.
 
-    Returns:
-    str | None - The valid directory name, or none if it may be a file.
+**Returns:**
+ str? - The valid directory name, or none if it may be a file.
 
-    Raises:
-    ValueError - When the name is not suitable for directories or files.
+**Raises:**
+ ValueError - When the name is not suitable for directories or files.
     """
     # Keep Name Length Reasonable
     if (name_length := len(dir_name)) >= 100:
@@ -53,18 +51,17 @@ def validate_dir_name(dir_name: str) -> str | None:
 
 
 def _validate_slash_char(dir_name: str) -> Literal['\\', '/'] | None:
-    """
-    Determine which slash char is used by the directory, if it is a directory.
-        Discourages use of both slash chars, by raising ValueError.
+    """ Determine which slash char is used by the directory, if it is a directory.
+ - Discourages use of both slash chars, by raising ValueError.
 
-    Parameters:
-    - dir_name (str): The given input to be validated.
+**Parameters:**
+ - dir_name (str): The given input to be validated.
 
-    Returns:
-    str | None - The slash character used, or none if no chars were found.
+**Returns:**
+ str? - The slash character used, or none if no chars were found.
 
-    Raises:
-    ValueError - When the name contains both slash characters.
+**Raises:**
+ ValueError - When the name contains both slash characters.
     """
     slash = None
     if '/' in dir_name:
@@ -77,23 +74,22 @@ def _validate_slash_char(dir_name: str) -> Literal['\\', '/'] | None:
 
 
 def _filter_slash_chars(dir_name: str) -> str | None:
+    """ Remove all of the slash characters and return the directory name.
+ - Returns None when there are no slash characters found.
+ - Raises ValueError when slash characters are used improperly.
+
+**Parameters:**
+ - dir_name (str): The given input to be validated.
+
+**Returns:**
+ str? - The valid directory name, or none if it may be a file.
+
+**Raises:**
+ ValueError - When the name is not suitable for directories or files.
     """
-    Remove all of the slash characters and return the directory name.
-        Returns None when there are no slash characters found.
-        Raises ValueError when slash characters are used improperly.
-
-    Parameters:
-    - dir_name (str): The given input to be validated.
-
-    Returns:
-    str | None - The valid directory name, or none if it may be a file.
-
-    Raises:
-    ValueError - When the name is not suitable for directories or files.
-    """
-    slash = _validate_slash_char(dir_name)
-    if slash is None:
+    if (slash := _validate_slash_char(dir_name)) is None:
         return None
+    slash = str(slash)
     if dir_name.endswith(slash) or dir_name.startswith(slash):
         name = dir_name.strip(slash)
         # Check for internal slash characters
