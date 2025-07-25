@@ -1,6 +1,5 @@
-"""Testing Tree Reader and Process Input Data Method
+""" Testing Tree Reader and Process Input Data Method
 """
-
 from treescript_files.input_data import InputData
 from treescript_files.tree_reader import process_input_data
 

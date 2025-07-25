@@ -1,10 +1,10 @@
-"""Testing Line Reader Methods.
+""" Testing Line Reader Methods.
 """
 import pytest
 
+from test.conftest import create_depth
 from treescript_files.line_reader import _calculate_depth, _process_line, _validate_node_name, read_input_tree
 from treescript_files.tree_data import TreeData
-from test import create_depth
 
 
 # Directory Variants: A tuple of all possible ways that a directory may be represented.
@@ -76,11 +76,8 @@ def test_process_line_file_returns_data(test_input, expect):
     ]
 )
 def test_process_line_file_odd_spaces_raises_exit(test_input):
-    try:
+    with pytest.raises(SystemExit):
         _process_line(1, test_input)
-        assert False
-    except SystemExit:
-        assert True
 
 
 @pytest.mark.parametrize(
@@ -126,11 +123,8 @@ def test_process_line_dir_returns_data(test_input, expect):
     ]
 )
 def test_process_line_dir_odd_spaces_raises_exit(test_input):
-    try:
+    with pytest.raises(SystemExit):
         _process_line(1, test_input)
-        assert False
-    except SystemExit:
-        assert True
 
 
 @pytest.mark.parametrize(
@@ -143,12 +137,8 @@ def test_process_line_dir_odd_spaces_raises_exit(test_input):
     ]
 )
 def test_process_line_parent_dir_raise_exit(test_input):
-    try:
+    with pytest.raises(SystemExit):
         _process_line(1, test_input)
-        raised_exit = False
-    except SystemExit:
-        raised_exit = True
-    assert raised_exit
 
 
 @pytest.mark.parametrize(
@@ -161,12 +151,8 @@ def test_process_line_parent_dir_raise_exit(test_input):
     ]
 )
 def test_process_line_current_dir_raise_exit(test_input):
-    try:
+    with pytest.raises(SystemExit):
         _process_line(1, test_input)
-        raised_exit = False
-    except SystemExit:
-        raised_exit = True
-    assert raised_exit
 
 
 @pytest.mark.parametrize(
@@ -258,11 +244,8 @@ def test_read_input_tree_files_including_comment_yields_data():
     assert next(generator) == TreeData(1, 0, True, 'src', '')
     assert next(generator) == TreeData(2, 1, False, 'data.txt', '')
     assert next(generator) == TreeData(4, 1, False, 'more_data.txt', 'Label')
-    try:
+    with pytest.raises(StopIteration):
         next(generator)
-        assert False
-    except StopIteration:
-        assert True
 
 
 def test_read_input_tree_trailing_blank_lines_are_ignored():
@@ -275,14 +258,11 @@ src/
     assert next(generator) == TreeData(2, 0, True, 'src', '')
     assert next(generator) == TreeData(3, 1, False, 'data.txt', '')
     # All Remaining Lines are blank and should be ignored
-    try:
+    with pytest.raises(StopIteration):
         next(generator)
-        assert False
-    except StopIteration:
-        assert True
 
 
-def test_read_input_tree_nameless_dir_raise_exit():
+def test_read_input_tree_nameless_dir_raises_exit():
     test_input = """
 src/
   data.txt
@@ -292,11 +272,8 @@ src/
     assert next(generator) == TreeData(2, 0, True, 'src', '')
     assert next(generator) == TreeData(3, 1, False, 'data.txt', '')
     # The next line is a dir slash with no name
-    try:
+    with pytest.raises(SystemExit):
         next(generator)
-        assert False
-    except SystemExit:
-        assert True
 
 
 @pytest.mark.parametrize(
@@ -309,8 +286,5 @@ src/
 def test_read_input_tree_odd_spaces_raises_exit(test_input):
     generator = read_input_tree(test_input)
     assert next(generator) == TreeData(1, 0, True, 'src', '')
-    try:
+    with pytest.raises(SystemExit):
         next(generator)
-        assert False
-    except SystemExit:
-        assert True
