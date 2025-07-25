@@ -1,4 +1,4 @@
-"""Testing Argument Parser Module Methods.
+""" Testing Argument Parser Module Methods.
 """
 import pytest
 
@@ -46,11 +46,8 @@ def test_parse_arguments_output_separator_options(test_input,expect):
     ]
 )
 def test_parse_arguments_parent_path_missing_flag_raises_exit(test_input):
-    try:
+    with pytest.raises(SystemExit):
         parse_arguments(test_input)
-        assert False
-    except SystemExit:
-        assert True
 
 
 @pytest.mark.parametrize(
@@ -63,11 +60,8 @@ def test_parse_arguments_parent_path_missing_flag_raises_exit(test_input):
     ]
 )
 def test_parse_arguments_no_tree_raises_exit(test_input):
-    try:
+    with pytest.raises(SystemExit):
         parse_arguments(test_input)
-        assert False
-    except SystemExit:
-        assert True
 
 
 @pytest.mark.parametrize(
@@ -79,24 +73,15 @@ def test_parse_arguments_no_tree_raises_exit(test_input):
     ]
 )
 def test_parse_arguments_invalid_args_raises_exit(test_input):
-    try:
+    with pytest.raises(SystemExit):
         parse_arguments(test_input)
-        assert False
-    except SystemExit:
-        assert True
 
 
 def test_validate_arguments_empty_tree_file_name_raises_type_error():
-    try:
+    with pytest.raises(TypeError):
         _validate_arguments('', None)
-        assert False
-    except TypeError:
-        assert True
 
 
 def test_validate_arguments_empty_parent_path_raises_type_error():
-    try:
+    with pytest.raises(TypeError):
         _validate_arguments('tree', '')
-        assert False
-    except TypeError:
-        assert True

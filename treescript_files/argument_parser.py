@@ -1,26 +1,24 @@
-"""Defines and Validates Argument Syntax.
-
-Encapsulates Argument Parser.
-
-Returns Argument Data, the args provided by the User.
+""" Defines and Validates Argument Syntax.
+ - Encapsulates Argument Parser.
+ - Returns Argument Data, the args provided by the User.
 """
 from argparse import ArgumentParser
 from sys import exit
-from typing import Optional
 
 from .argument_data import ArgumentData
 from .string_validation import validate_name
 
 
-def parse_arguments(args: Optional[list[str]] = None) -> ArgumentData:
-    """
-    Parse command line arguments.
+def parse_arguments(
+    args: list[str],
+) -> ArgumentData:
+    """ Parse command line arguments.
 
-    Parameters:
-    - args: A list of argument strings.
+**Parameters:**
+ - args (list[str]): A list of argument strings.
 
-    Returns:
-    ArgumentData : Container for Valid Argument Data.
+**Returns:**
+ ArgumentData - Container for Valid Argument Data.
     """
     if args is None or len(args) == 0:
         exit("No Arguments given. ")
@@ -35,14 +33,13 @@ def parse_arguments(args: Optional[list[str]] = None) -> ArgumentData:
 def _determine_output_separator(
     parsed_args,
 ) -> str:
-    """
-    Given the parsed arguments object, determine the separator.
+    """ Given the parsed arguments object, determine the separator.
 
-    Parameters:
-    - parsed_argument : The object returned by the ArgumentParser.
+**Parameters:**
+ - parsed_args (Namespace): The object returned by the ArgumentParser.
 
-    Returns:
-    str - The separator to use between elements in the output.
+**Returns:**
+ str - The separator to use between elements in the output.
     """
     if parsed_args.space:
         return ' '
@@ -56,15 +53,14 @@ def _determine_output_separator(
 def _validate_arguments(
     parsed_args,
 ) -> ArgumentData:
-    """
-    Checks the values received from the ArgParser.
-        Uses Validate Name method from StringValidation.
+    """ Checks the values received from the ArgParser.
+ - Uses Validate Name method from StringValidation.
 
-    Parameters:
-    - parsed_args : The object returned by ArgumentParser.
+**Parameters:**
+ - parsed_args : The object returned by ArgumentParser.
 
-    Returns:
-    ArgumentData - A DataClass of syntactically correct arguments.
+**Returns:**
+ ArgumentData - A DataClass of syntactically correct arguments.
     """
     tree_file = parsed_args.tree_file
     parent_path = parsed_args.parent
@@ -83,12 +79,11 @@ def _validate_arguments(
 
 
 def _define_arguments() -> ArgumentParser:
-    """
-    Initializes and Defines Argument Parser.
-       - Sets Required/Optional Arguments and Flags.
+    """ Initializes and Defines Argument Parser.
+ - Sets Required/Optional Arguments and Flags.
 
-    Returns:
-    argparse.ArgumentParser - An instance with all supported Arguments.
+**Returns:**
+ argparse.ArgumentParser - An instance with all supported Arguments.
     """
     parser = ArgumentParser(
         description="TreeScript Files",

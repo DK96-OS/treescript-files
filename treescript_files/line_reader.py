@@ -1,12 +1,11 @@
-"""Line Reader.
+""" Line Reader.
 
 The Default Input Reader.
-    Processes a single line at a time, and determines its key properties.
-    The Depth is the Integer number of directories between the current line and the root.
-    The Directory Boolean indicates whether the line represents a Directory.
-    The Name String is the name of the line.
+ - Processes a single line at a time, and determines its key properties.
+ - The Depth is the Integer number of directories between the current line and the root.
+ - The Directory Boolean indicates whether the line represents a Directory.
+ - The Name String is the name of the line.
 """
-
 from itertools import groupby
 from sys import exit
 from typing import Generator
@@ -18,18 +17,19 @@ from .tree_data import TreeData
 SPACE_CHARS = (" ", " ", " ", " ")
 
 
-def read_input_tree(input_tree_data: str) -> Generator[TreeData, None, None]:
-    """
-    Generate structured Tree Data from the Input Data String.
+def read_input_tree(
+    input_tree_data: str
+) -> Generator[TreeData, None, None]:
+    """ Generate TreeData objects from the TreeScript string.
 
-    Parameters:
-    - input_data (InputData): The Input.
+**Parameters:**
+ - input_tree_data (str): The Input TreeScript text string.
 
-    Returns:
-    Generator[TreeData] - Produces TreeData from the Input Data.
+**Yields:**
+ TreeData - Produces TreeData from the Input Data.
 
-    Raises:
-    SystemExit - When any Line cannot be read successfully.
+**Raises:**
+ SystemExit - When any Line cannot be read successfully.
     """
     line_number = 1
     for is_newline, group in groupby(input_tree_data, lambda x: x == "\n"):
@@ -45,19 +45,22 @@ def read_input_tree(input_tree_data: str) -> Generator[TreeData, None, None]:
             line_number += 1  # todo: Line number increase by size of group
 
 
-def _process_line(line_number: int, line: str) -> TreeData:
-    """
-    Processes a single line of the input tree structure.
-    Returns a tuple indicating the depth, type (file or directory), name of file or dir, and file data if available.
+def _process_line(
+    line_number: int,
+    line: str,
+) -> TreeData:
+    """ Processes a single line of the input tree structure.
+ - Returns a tuple indicating the depth, type (file or directory), name of file or dir, and file data if available.
 
-    Parameters:
-    - line (str): A line from the input tree structure.
+**Parameters:**
+ - line_number (int): The number for future reference.
+ - line (str): A line from the input tree structure.
 
-    Returns:
-    tuple: (int, bool, str, str) where int is the depth, bool is true when is Directory, and str is name, followed by str data.
+**Returns:**
+ TreeData - where int is the depth, bool is true when is Directory, and str is name, followed by str data.
 
-    Raises:
-    SystemExit - When Line cannot be read successfully.
+**Raises:**
+ SystemExit - When Line cannot be read successfully.
     """
     # Calculate the Depth
     depth = _calculate_depth(line)
@@ -88,41 +91,39 @@ def _process_line(line_number: int, line: str) -> TreeData:
 
 
 def _validate_node_name(node_name: str) -> tuple[bool, str] | None:
-    """
-    Determine whether this Tree Node is a Directory, and validate the name.
+    """ Determine whether this Tree Node is a Directory, and validate the name.
 
-    Parameters:
-    - node_name (str): The argument received for the node name.
+**Parameters:**
+ - node_name (str): The argument received for the node name.
 
-    Returns:
-    tuple[bool, str] - Node information, first whether it is a directory, then the valid name of the node.
+**Returns:**
+ tuple[bool, str] - Node information, first whether it is a directory, then the valid name of the node.
 
-    Raises:
-    SystemExit - When the directory name is invalid.
+**Raises:**
+ SystemExit - When the directory name is invalid.
     """
     try:
         # Check if the line contains any slash characters
         if (dir_name := validate_dir_name(node_name)) is not None:
-            return (True, dir_name)
+            return True, dir_name
         # Fall-Through to File Node
     except ValueError:
         # An error in the dir name, such that it cannot be a file either
         return None
     # Is a File
     if validate_name(node_name):
-        return (False, node_name)
+        return False, node_name
     return None
 
 
 def _calculate_depth(line: str) -> int:
-    """
-    Calculates the depth of a line in the tree structure.
+    """ Calculates the depth of a line in the tree structure.
 
-    Parameters:
-    - line (str): A line from the tree command output.
+**Parameters:**
+ - line (str): A line from the tree command output.
 
-    Returns:
-    int: The depth of the line in the tree structure, or -1 if space count is invalid.
+**Returns:**
+ int - The depth of the line in the tree structure, or -1 if space count is invalid.
     """
     from itertools import takewhile
 
