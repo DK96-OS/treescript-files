@@ -21,7 +21,7 @@ def parse_arguments(
  ArgumentData - Container for Valid Argument Data.
     """
     if args is None or len(args) == 0:
-        exit("No Arguments given. ")
+        exit("No Arguments given.")
     # Initialize the Parser and Parse Immediately
     try:
         parsed_args = _define_arguments().parse_args(args)
