@@ -6,7 +6,7 @@ def main():
  Author: DK96-OS 2024 - 2025
     """
     from sys import argv
-    from treescript_files.input import validate_input
+    from treescript_files import validate_input
     input_data = validate_input(argv[1:])
     #
     from treescript_files import ts_files

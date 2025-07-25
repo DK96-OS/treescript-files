@@ -5,8 +5,8 @@
 from argparse import ArgumentParser
 from sys import exit
 
-from .argument_data import ArgumentData
-from .string_validation import validate_name
+from treescript_files.argument_data import ArgumentData
+from treescript_files.string_validation import validate_name
 
 
 def parse_arguments(
@@ -21,7 +21,7 @@ def parse_arguments(
  ArgumentData - Container for Valid Argument Data.
     """
     if args is None or len(args) == 0:
-        exit("No Arguments given. ")
+        exit("No Arguments given.")
     # Initialize the Parser and Parse Immediately
     try:
         parsed_args = _define_arguments().parse_args(args)
