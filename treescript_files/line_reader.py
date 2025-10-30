@@ -6,7 +6,6 @@ The Default Input Reader.
  - The Directory Boolean indicates whether the line represents a Directory.
  - The Name String is the name of the line.
 """
-from itertools import groupby
 from sys import exit
 from typing import Generator
 
@@ -14,35 +13,28 @@ from .string_validation import validate_dir_name, validate_name
 from .tree_data import TreeData
 
 
-SPACE_CHARS = (" ", " ", " ", " ")
+_INVALID_DEPTH_ERROR_MSG = "Invalid Indentation (Number of Spaces) in Line: "
+_INVALID_NODE_NAME_ERROR_MSG = "Invalid Name in Line: "
 
 
 def read_input_tree(
     input_tree_data: str
 ) -> Generator[TreeData, None, None]:
-    """ Generate TreeData objects from the TreeScript string.
+    """ Generate structured Tree Data from the Input Data String.
 
 **Parameters:**
- - input_tree_data (str): The Input TreeScript text string.
+ - input_tree_data (str): The Input string, which should contain TreeScript.
 
 **Yields:**
  TreeData - Produces TreeData from the Input Data.
 
 **Raises:**
- SystemExit - When any Line cannot be read successfully.
+ SystemExit - When any Line cannot be read as TreeScript successfully.
     """
-    line_number = 1
-    for is_newline, group in groupby(input_tree_data, lambda x: x == "\n"):
-        if not is_newline:
-            line = "".join(group)
-            line_stripped = line.lstrip()
-            if len(line_stripped) == 0:
-                continue
-            elif line_stripped.startswith("#"):
-                continue
-            yield _process_line(line_number, line)
-        else:
-            line_number += 1  # todo: Line number increase by size of group
+    for line_number, line in enumerate(input_tree_data.splitlines(), start=1):
+        if len(lstr := line.lstrip()) == 0 or lstr.startswith('#'):
+            continue
+        yield _process_line(line_number, line)
 
 
 def _process_line(
@@ -62,74 +54,65 @@ def _process_line(
 **Raises:**
  SystemExit - When Line cannot be read successfully.
     """
-    # Calculate the Depth
-    depth = _calculate_depth(line)
-    if depth < 0:
-        exit(f"Invalid Space Count in Line: {line_number}")
-    # Remove Space
-    args = line.strip()
-    # Try to split line into multiple arguments
-    for space_char in SPACE_CHARS:
-        if space_char in args:
-            args = args.split(space_char)
-            break
-    # Check whether line was split or not
-    if isinstance(args, str):
-        name = args
-        data_label = ""
-    elif isinstance(args, list) and len(args) >= 2:
-        name = args[0]
-        data_label = args[1]
-    else:
-        exit(f"Invalid Line: {line_number}")
-    # Validate the Node Name and Type.
-    node_info = _validate_node_name(name)
-    if node_info is None:
-        exit(f"Invalid Node on Line: {line_number}")
-    (is_dir, name) = node_info
-    return TreeData(line_number, depth, is_dir, name, data_label)
+    # Remove Leading Spaces (and trailing)
+    if chr(32) in (args := line.strip()):
+        args = args.split(chr(32))  # Split line into words.
+        name = args[0]  # First Word is the Tree Node Name.
+        # Additional Words are ignored.
+        is_dir, node_name = _validate_node_name(line_number, name)
+    else:  # Was Not Split
+        is_dir, node_name = _validate_node_name(line_number, args)
+    return TreeData(
+        line_number=line_number,
+        depth=_calculate_depth(line_number, line),
+        is_dir=is_dir,
+        name=node_name,
+    )
 
 
-def _validate_node_name(node_name: str) -> tuple[bool, str] | None:
+def _validate_node_name(
+    line_number: int,
+    node_name: str,
+) -> tuple[bool, str]:
     """ Determine whether this Tree Node is a Directory, and validate the name.
 
 **Parameters:**
+ - line_number (int): Identifies the line in the input tree.
  - node_name (str): The argument received for the node name.
 
 **Returns:**
- tuple[bool, str] - Node information, first whether it is a directory, then the valid name of the node.
+ tuple[bool, str] - Node information: is a directory, name of node.
 
 **Raises:**
  SystemExit - When the directory name is invalid.
     """
-    try:
-        # Check if the line contains any slash characters
+    try: # Check if the line contains any slash characters
         if (dir_name := validate_dir_name(node_name)) is not None:
             return True, dir_name
         # Fall-Through to File Node
-    except ValueError:
-        # An error in the dir name, such that it cannot be a file either
-        return None
-    # Is a File
-    if validate_name(node_name):
-        return False, node_name
-    return None
+    except ValueError: # An error in the dir name validation method, such that it cannot be a file either
+        exit(_INVALID_NODE_NAME_ERROR_MSG + str(line_number))
+    if not validate_name(node_name):
+        exit(_INVALID_NODE_NAME_ERROR_MSG + str(line_number))
+    return False, node_name # Is a FileNode
 
 
-def _calculate_depth(line: str) -> int:
+def _calculate_depth(
+    line_number: int,
+    line: str
+) -> int:
     """ Calculates the depth of a line in the tree structure.
 
 **Parameters:**
+ - line_number (int): The LineNumber used for debugging invalid line indentation.
  - line (str): A line from the tree command output.
 
 **Returns:**
  int - The depth of the line in the tree structure, or -1 if space count is invalid.
     """
-    from itertools import takewhile
-
-    space_count = len(list(takewhile(lambda c: c in SPACE_CHARS, line)))
-    depth = space_count >> 1
-    if depth << 1 == space_count:
-        return depth
-    # Invalid Space Count: Negative 1
-    return -1
+    space_count = len(line) - len(line.lstrip())
+    # Bit Shift Shuffle Equivalence Validation (space_count is divisible by 2)
+    if (depth := space_count >> 1) << 1 != space_count:
+        # Invalid Space Count! Someone made an off-by-one whitespace mistake!
+        exit(_INVALID_DEPTH_ERROR_MSG + str(line_number))
+    return depth

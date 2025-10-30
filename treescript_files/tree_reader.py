@@ -3,6 +3,7 @@
 from typing import Generator
 
 from treescript_files.input_data import InputData
+from treescript_files.line_reader import read_input_tree
 from treescript_files.path_stack import PathStack
 from treescript_files.tree_data import TreeData
 
@@ -18,8 +19,27 @@ def process_input_data(
 **Yields:**
  str - The file path strings.
     """
-    file_generator = _process_tree_data(input_data.get_tree_data())
-    if (parent := input_data.parent_path) is not None:
+    yield from process_treescript_files(
+        treescript_file=input_data.tree_input,
+        parent_path=input_data.parent_path,
+    )
+
+
+def process_treescript_files(
+    treescript_file: str,
+    parent_path: str | None
+) -> Generator[str, None, None]:
+    """ Process the Input Data and set-up file path generators.
+
+**Parameters:**
+ - treescript_file (str): The Input TreeScript file to translate into file path strings.
+ - parent_path (str?): The ParentPath to prefix file paths with.
+
+**Yields:**
+ str - The file path strings.
+    """
+    file_generator = _process_tree_data(read_input_tree(treescript_file))
+    if (parent := parent_path) is not None:
         file_generator = _prefix_parent(parent, file_generator)
     return file_generator
 
@@ -31,9 +51,6 @@ def _process_tree_data(
     """
     path_stack = PathStack()
     for tree_node in tree_data_generator:
-        # Ensure depth is non-negative
-        if tree_node.depth < 0:
-            exit('Invalid Depth Value')
         # Check Depth Change
         if (delta := tree_node.depth - path_stack.get_depth()) > 0:
             exit(f'You have jumped {delta} steps in the tree on line: {tree_node.line_number}')
