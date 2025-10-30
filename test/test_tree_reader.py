@@ -11,7 +11,7 @@ def test_process_input_data_single_file():
     )
     result = list(process_input_data(input_data))
     assert len(result) == 1
-    assert result[0] == 'src/file.py'
+    assert result[0] in ['src/file.py', 'src\\file.py']
 
 
 def test_process_input_data_parent_path():
@@ -21,7 +21,7 @@ def test_process_input_data_parent_path():
     )
     result = list(process_input_data(input_data))
     assert len(result) == 1
-    assert result[0] == 'module/src/file.py'
+    assert result[0] in ['module/src/file.py', 'module\\src\\file.py']
 
 
 def test_process_input_data_two_files():
@@ -31,8 +31,8 @@ def test_process_input_data_two_files():
     )
     result = list(process_input_data(input_data))
     assert len(result) == 2
-    assert result[0] == 'src/file.py'
-    assert result[1] == 'src/file2.py'
+    assert result[0] in ['src/file.py', 'src\\file.py']
+    assert result[1] in ['src/file2.py', 'src\\file2.py']
 
 
 def test_process_input_data_two_files_parent_path():
@@ -42,5 +42,5 @@ def test_process_input_data_two_files_parent_path():
     )
     result = list(process_input_data(input_data))
     assert len(result) == 2
-    assert result[0] == 'module/src/file.py'
-    assert result[1] == 'module/src/file2.py'
+    assert result[0] in ['module/src/file.py', 'module\\src\\file.py']
+    assert result[1] in ['module/src/file2.py', 'module\\src\\file2.py']

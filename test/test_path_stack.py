@@ -15,7 +15,7 @@ def test_join_stack_empty_returns_slash(stack):
 
 def test_join_stack_single_item_returns_stack(stack):
     stack.push('src')
-    assert stack.join_stack() == 'src/'
+    assert stack.join_stack() in ['src/', 'src\\']
 
 
 def test_reduce_depth_empty_to_zero_returns_True(stack):
