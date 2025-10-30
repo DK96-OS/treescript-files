@@ -24,7 +24,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           persist-credentials: false
-      
+
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v6
         with:
@@ -38,7 +38,7 @@ jobs:
           pip install pytest==8.4.2 pytest-cov==6.2.1
 
       - name: Run unit tests
-        run: pytest test/ --cov=treescript_files --cov-report=html --cov-fail-under=85
+        run: pytest test/ --cov=treescript_files --cov-report=html --cov-fail-under=93
 
       - name: Upload Test Coverage Reports
         uses: actions/upload-artifact@v5
