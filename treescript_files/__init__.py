@@ -3,7 +3,7 @@
 """
 from treescript_files.argument_parser import parse_arguments
 from treescript_files.input_data import InputData, validate_arguments
-from treescript_files.tree_reader import process_input_data
+from treescript_files.tree_reader import generate_treescript_files
 
 
 def ts_files(
@@ -17,7 +17,10 @@ def ts_files(
 **Returns:**
  str - The String containing all of the Files, in the desired output format.
     """
-    file_generator = process_input_data(input_data)
+    file_generator = generate_treescript_files(
+        treescript_file=input_data.tree_input,
+        parent_path=input_data.parent_path,
+    )
     return input_data.separator.join(file_generator)
 
 
