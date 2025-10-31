@@ -1,8 +1,11 @@
 """ Testing Line Reader Methods.
 """
+from re import escape
+
 import pytest
 
 from test.conftest import create_depth
+from treescript_files import line_reader
 from treescript_files.line_reader import _calculate_depth, _process_line, _validate_node_name, read_input_tree
 from treescript_files.tree_data import TreeData
 
@@ -18,8 +21,8 @@ dir_variants = ('/dir', 'dir/', '\\dir', 'dir\\')
         for depth in range(0, 9)
     ]
 )
-def test_calculate_depth_file_returns_true(test_input, expect):
-    assert _calculate_depth(test_input) == expect
+def test_calculate_depth_file_returns_expected(test_input, expect):
+    assert _calculate_depth(1, test_input) == expect
 
 
 @pytest.mark.parametrize(
@@ -30,37 +33,39 @@ def test_calculate_depth_file_returns_true(test_input, expect):
     ]
 )
 def test_calculate_depth_file_odd_spaces_raises_exit(test_input):
-    assert _calculate_depth(test_input) == -1
+    with pytest.raises(SystemExit, match=escape(line_reader._INVALID_DEPTH_ERROR_MSG)):
+        _calculate_depth(1, test_input)
 
 
 @pytest.mark.parametrize(
     "test_input,expect",
     [
-        (create_depth(depth) + dir, depth)
-        for dir in dir_variants
+        (create_depth(depth) + dir_name, depth)
+        for dir_name in dir_variants
         for depth in range(0, 9)
     ]
 )
-def test_calculate_depth_dir_returns_true(test_input, expect):
-    assert _calculate_depth(test_input) == expect
+def test_calculate_depth_dir_returns_expected(test_input, expect):
+    assert _calculate_depth(1, test_input) == expect
 
 
 @pytest.mark.parametrize(
     "test_input",
     [
-        (create_depth(depth) + ' ' + dir)
-        for dir in dir_variants
+        (create_depth(depth) + ' ' + dir_name)
+        for dir_name in dir_variants
         for depth in range(0, 9)
     ]
 )
-def test_calculate_depth_dir_odd_spaces_returns_negative(test_input):
-    assert _calculate_depth(test_input) == -1
+def test_calculate_depth_dir_odd_spaces_raises_exit(test_input):
+    with pytest.raises(SystemExit, match=escape(line_reader._INVALID_DEPTH_ERROR_MSG)):
+        _calculate_depth(1, test_input)
 
 
 @pytest.mark.parametrize(
     "test_input,expect",
     [
-        (create_depth(depth) + 'file', TreeData(1, depth, False, 'file', ''))
+        (create_depth(depth) + 'file', TreeData(1, depth, False, 'file'))
         for depth in range(0, 4)
     ]
 )
@@ -83,18 +88,19 @@ def test_process_line_file_odd_spaces_raises_exit(test_input):
 @pytest.mark.parametrize(
     "test_input,expect",
     [
-        (create_depth(depth) + 'file DataLabel', TreeData(1, depth, False, 'file', 'DataLabel'))
+        (create_depth(depth) + 'file DataLabel', TreeData(1, depth, False, 'file'))
         for depth in range(0, 4)
     ]
 )
 def test_process_line_file_data_label_returns_data(test_input, expect):
+    # Ignores the DataLabel
     assert _process_line(1, test_input) == expect
 
 
 @pytest.mark.parametrize(
     "test_input,expect",
     [
-        (create_depth(depth) + 'file ', TreeData(1, depth, False, 'file', ''))
+        (create_depth(depth) + 'file ', TreeData(1, depth, False, 'file'))
         for depth in range(0, 4)
     ]
 )
@@ -105,7 +111,7 @@ def test_process_line_file_trailing_space_returns_data(test_input, expect):
 @pytest.mark.parametrize(
     "test_input,expect",
     [
-        (create_depth(depth) + dir, TreeData(1, depth, True, dir.strip('/\\'), ''))
+        (create_depth(depth) + dir, TreeData(1, depth, True, dir.strip('/\\')))
         for dir in dir_variants
         for depth in range(0, 4)
     ]
@@ -165,7 +171,7 @@ def test_process_line_current_dir_raise_exit(test_input):
     ]
 )
 def test_validate_node_name_valid_dir_returns_tuple(test_input):
-    assert _validate_node_name(test_input) == (True, 'a')
+    assert _validate_node_name(1, test_input) == (True, 'a')
 
 
 @pytest.mark.parametrize(
@@ -178,7 +184,7 @@ def test_validate_node_name_valid_dir_returns_tuple(test_input):
     ]
 )
 def test_validate_node_name_valid_hidden_dir_returns_tuple(test_input):
-    assert _validate_node_name(test_input) == (True, '.a')
+    assert _validate_node_name(1, test_input) == (True, '.a')
 
 
 @pytest.mark.parametrize(
@@ -190,7 +196,7 @@ def test_validate_node_name_valid_hidden_dir_returns_tuple(test_input):
     ]
 )
 def test_validate_node_name_valid_file_returns_tuple(test_input):
-    assert _validate_node_name(test_input) == (False, test_input)
+    assert _validate_node_name(1, test_input) == (False, test_input)
 
 
 @pytest.mark.parametrize(
@@ -202,8 +208,9 @@ def test_validate_node_name_valid_file_returns_tuple(test_input):
         "././",
     ]
 )
-def test_validate_node_name_invalid_dir_returns_none(test_input):
-    assert _validate_node_name(test_input) is None
+def test_validate_node_name_invalid_dir_raises_exit(test_input):
+    with pytest.raises(SystemExit):
+        _validate_node_name(1, test_input)
 
 
 @pytest.mark.parametrize(
@@ -214,7 +221,8 @@ def test_validate_node_name_invalid_dir_returns_none(test_input):
     ]
 )
 def test_validate_node_name_invalid_file_returns_none(test_input):
-    assert _validate_node_name(test_input) is None
+    with pytest.raises(SystemExit):
+        _validate_node_name(1, test_input)
 
 
 def test_read_input_tree_all_dirs():
@@ -224,9 +232,9 @@ src/
     more_data/
 """
     generator = read_input_tree(test_input)
-    assert next(generator) == TreeData(2, 0, True, 'src', '')
-    assert next(generator) == TreeData(3, 1, True, 'data', '')
-    assert next(generator) == TreeData(4, 2, True, 'more_data', '')
+    assert next(generator) == TreeData(2, 0, True, 'src')
+    assert next(generator) == TreeData(3, 1, True, 'data')
+    assert next(generator) == TreeData(4, 2, True, 'more_data')
     try:
         next(generator)
         assert False
@@ -241,9 +249,9 @@ def test_read_input_tree_files_including_comment_yields_data():
   more_data.txt Label
 """
     generator = read_input_tree(test_input)
-    assert next(generator) == TreeData(1, 0, True, 'src', '')
-    assert next(generator) == TreeData(2, 1, False, 'data.txt', '')
-    assert next(generator) == TreeData(4, 1, False, 'more_data.txt', 'Label')
+    assert next(generator) == TreeData(1, 0, True, 'src')
+    assert next(generator) == TreeData(2, 1, False, 'data.txt')
+    assert next(generator) == TreeData(4, 1, False, 'more_data.txt')
     with pytest.raises(StopIteration):
         next(generator)
 
@@ -255,8 +263,8 @@ src/
 
     """
     generator = read_input_tree(test_input)
-    assert next(generator) == TreeData(2, 0, True, 'src', '')
-    assert next(generator) == TreeData(3, 1, False, 'data.txt', '')
+    assert next(generator) == TreeData(2, 0, True, 'src')
+    assert next(generator) == TreeData(3, 1, False, 'data.txt')
     # All Remaining Lines are blank and should be ignored
     with pytest.raises(StopIteration):
         next(generator)
@@ -269,8 +277,8 @@ src/
   /
     """
     generator = read_input_tree(test_input)
-    assert next(generator) == TreeData(2, 0, True, 'src', '')
-    assert next(generator) == TreeData(3, 1, False, 'data.txt', '')
+    assert next(generator) == TreeData(2, 0, True, 'src')
+    assert next(generator) == TreeData(3, 1, False, 'data.txt')
     # The next line is a dir slash with no name
     with pytest.raises(SystemExit):
         next(generator)
@@ -285,6 +293,6 @@ src/
 )
 def test_read_input_tree_odd_spaces_raises_exit(test_input):
     generator = read_input_tree(test_input)
-    assert next(generator) == TreeData(1, 0, True, 'src', '')
+    assert next(generator) == TreeData(1, 0, True, 'src')
     with pytest.raises(SystemExit):
         next(generator)

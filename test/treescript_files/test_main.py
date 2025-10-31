@@ -4,10 +4,12 @@
 import builtins
 import os
 import sys
+from re import escape
 
 import pytest
 
 from test.conftest import PrintCollector
+from treescript_files import file_validation
 from treescript_files.__main__ import main
 
 
@@ -26,7 +28,7 @@ def test_main_empty_input_file_raises_exit(monkeypatch, tmp_path):
     os.chdir(tmp_path)
     (tmp_path / TEST_INPUT_FILE_NAME).touch()
     #
-    with pytest.raises(SystemExit, match='Input was Empty or Invalid.'):
+    with pytest.raises(SystemExit, match=escape(file_validation._FILE_EMPTY_MSG)):
         main()
 
 
@@ -39,7 +41,10 @@ def test_main_basic_input_file_returns_treescript(monkeypatch, tmp_path):
     collector = PrintCollector()
     monkeypatch.setattr(builtins, 'print', collector.get_mock_print())
     main()
-    collector.assert_expected('src/file.py')
+    assert collector.collection in [
+        'src/file.py',
+        'src\\file.py'
+    ]
 
 
 def test_main_two_input_files_returns_treescript(monkeypatch, tmp_path):
@@ -51,4 +56,21 @@ def test_main_two_input_files_returns_treescript(monkeypatch, tmp_path):
     collector = PrintCollector()
     monkeypatch.setattr(builtins, 'print', collector.get_mock_print())
     main()
-    collector.assert_expected('src/file.py\nsrc/file2.py')
+    assert collector.collection in [
+        'src/file.py\nsrc/file2.py',
+        'src\\file.py\nsrc\\file2.py',
+    ]
+
+
+def test_main_large_parent_path_arg_raises_exit(tmp_path):
+    sys.argv = ['treescript-files', TEST_INPUT_FILE_NAME, '--parent', './' + '/'.join(f'abc{i}' for i in range(19))]
+    os.chdir(tmp_path)
+    with pytest.raises(ValueError, match='ParentPath Prefix Argument Too Long.'):
+        main()
+
+
+def test_main_invalid_parent_path_slash_char_combination_raises_exit(tmp_path):
+    sys.argv = ['treescript-files', TEST_INPUT_FILE_NAME, '--parent', './abc\\def\\']
+    os.chdir(tmp_path)
+    with pytest.raises(ValueError, match='Invalid Directory slash character combination.'):
+        main()

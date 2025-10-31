@@ -1,10 +1,11 @@
 """ Path Stack Management.
 """
+from pathlib import Path
 
 
 class PathStack:
     """ A Stack of Directory names in a Path.
-    
+
 **Method Summary:**
  - push(str)
  - join_stack: str
@@ -25,7 +26,7 @@ class PathStack:
         """
         self._stack.append(directory_name)
 
-    def join_stack(self) -> str:
+    def join_stack(self, path_separator: str = str(Path('a/b'))[1]) -> str:
         """ Combines all elements in the Stack to form a parent directory.
 
         **Returns:**
@@ -33,7 +34,7 @@ class PathStack:
         """
         if len(self._stack) == 0:
             return ""
-        return f"{'/'.join(self._stack)}/"
+        return f"{path_separator.join(self._stack)}{path_separator}"
 
     def reduce_depth(self, depth: int) -> bool:
         """ Reduce the Depth of the Path Stack.

@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="treescript-files",
-    version="0.2.5",
+    version="0.2.6",
     description="Obtains the relative path of all files in the TreeScript.",
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
@@ -35,5 +35,6 @@ setup(
         'Programming Language :: Python :: 3.11',
         'Programming Language :: Python :: 3.12',
         'Programming Language :: Python :: 3.13',
+        'Programming Language :: Python :: 3.14',
     ],
 )

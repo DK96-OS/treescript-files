@@ -50,7 +50,7 @@ def validate_dir_name(dir_name: str) -> str | None:
     return None
 
 
-def _validate_slash_char(dir_name: str) -> Literal['\\', '/'] | None:
+def validate_slash_char(dir_name: str) -> Literal['\\', '/'] | None:
     """ Determine which slash char is used by the directory, if it is a directory.
  - Discourages use of both slash chars, by raising ValueError.
 
@@ -87,7 +87,7 @@ def _filter_slash_chars(dir_name: str) -> str | None:
 **Raises:**
  ValueError - When the name is not suitable for directories or files.
     """
-    if (slash := _validate_slash_char(dir_name)) is None:
+    if (slash := validate_slash_char(dir_name)) is None:
         return None
     slash = str(slash)
     if dir_name.endswith(slash) or dir_name.startswith(slash):

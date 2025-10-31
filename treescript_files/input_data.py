@@ -1,11 +1,12 @@
 """ Validated Input DataClass for TreeScript Files.
  Author: DK96-OS 2024 - 2025
 """
-from typing import Generator
 from dataclasses import dataclass
+from typing import Generator
 
 from .argument_data import ArgumentData
 from .file_validation import validate_input_file
+from .string_validation import validate_slash_char
 from .tree_data import TreeData
 
 
@@ -42,8 +43,17 @@ def validate_arguments(argument_data: ArgumentData) -> InputData:
 **Returns:**
  InputData - A frozen Dataclass containing validated program input.
     """
+    # Parent Path Prefix Validation Part 1:
+    if (path_prefix := argument_data.parent_path) is not None:
+        if len(path_prefix) >= 100: # Keep MaxLength Reasonable
+            raise ValueError('ParentPath Prefix Argument Too Long.')
+        # Prevent Invalid Dir Slash Combinations
+        if validate_slash_char(path_prefix) is not None:
+            pass # This is handled by Validation Part 2.
+        elif len(path_prefix.strip()) < 1:
+            path_prefix = None # Remove blank arguments
     return InputData(
         tree_input=validate_input_file(argument_data.tree_file),
-        parent_path=argument_data.parent_path,
+        parent_path=path_prefix,
         separator=argument_data.separator,
     )
