@@ -60,3 +60,17 @@ def test_main_two_input_files_returns_treescript(monkeypatch, tmp_path):
         'src/file.py\nsrc/file2.py',
         'src\\file.py\nsrc\\file2.py',
     ]
+
+
+def test_main_large_parent_path_arg_raises_exit(tmp_path):
+    sys.argv = ['treescript-files', TEST_INPUT_FILE_NAME, '--parent', './' + '/'.join(f'abc{i}' for i in range(19))]
+    os.chdir(tmp_path)
+    with pytest.raises(ValueError, match='ParentPath Prefix Argument Too Long.'):
+        main()
+
+
+def test_main_invalid_parent_path_slash_char_combination_raises_exit(tmp_path):
+    sys.argv = ['treescript-files', TEST_INPUT_FILE_NAME, '--parent', './abc\\def\\']
+    os.chdir(tmp_path)
+    with pytest.raises(ValueError, match='Invalid Directory slash character combination.'):
+        main()
