@@ -18,7 +18,7 @@ def test_join_stack_single_item_returns_stack(stack):
     assert stack.join_stack() in ['src/', 'src\\']
 
 
-def test_reduce_depth_empty_to_zero_returns_True(stack):
+def test_reduce_depth_empty_to_zero_returns_true(stack):
     assert stack.reduce_depth(0)
 
 
