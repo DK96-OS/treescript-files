@@ -25,7 +25,7 @@ def test_process_input_data_invalid_indentation_raises_exit():
         parent_path=None
     )
     with pytest.raises(SystemExit, match=escape(line_reader._INVALID_DEPTH_ERROR_MSG)):
-        result = list(process_input_data(input_data))
+        list(process_input_data(input_data))
 
 
 @pytest.mark.parametrize(
@@ -43,6 +43,78 @@ def test_process_input_data_parametrized_parent_path_returns_valid_path(parent_p
     result = list(process_input_data(input_data))
     assert len(result) == 1
     assert result[0] in ['module/src/file.py', 'module\\src\\file.py']
+
+
+@pytest.mark.parametrize(
+    'parent_path', [
+        'project/module/main/',
+        'project/module/main',
+        'project\\module\\main\\',
+        'project\\module\\main',
+    ]
+)
+def test_process_input_data_parametrized_parent_path_long_returns_valid_path(parent_path: str):
+    input_data = InputData(
+        tree_input='src/\n  file.py',
+        parent_path=parent_path,
+    )
+    result = list(process_input_data(input_data))
+    assert len(result) == 1
+    assert result[0] in ['project/module/main/src/file.py', 'project\\module\\main\\src\\file.py']
+
+
+@pytest.mark.parametrize(
+    'parent_path', [
+        '/project/module/main/',
+        '/project/module/main',
+        '\\project\\module\\main\\',
+        '\\project\\module\\main',
+    ]
+)
+def test_process_input_data_parametrized_parent_path_long_with_start_slash_returns_valid_path(parent_path: str):
+    input_data = InputData(
+        tree_input='src/\n  file.py',
+        parent_path=parent_path,
+    )
+    result = list(process_input_data(input_data))
+    assert len(result) == 1
+    assert result[0] in ['/project/module/main/src/file.py', '\\project\\module\\main\\src\\file.py']
+
+
+@pytest.mark.parametrize(
+    'parent_path', [
+        './project/module/main/',
+        './project/module/main',
+        '.\\project\\module\\main\\',
+        '.\\project\\module\\main',
+    ]
+)
+def test_process_input_data_parametrized_parent_path_long_in_cwd_returns_valid_path(parent_path: str):
+    input_data = InputData(
+        tree_input='src/\n  file.py',
+        parent_path=parent_path,
+    )
+    result = list(process_input_data(input_data))
+    assert len(result) == 1
+    assert result[0] in ['./project/module/main/src/file.py', '.\\project\\module\\main\\src\\file.py']
+
+
+@pytest.mark.parametrize(
+    'parent_path', [
+        '../project/module/main/',
+        '../project/module/main',
+        '..\\project\\module\\main\\',
+        '..\\project\\module\\main',
+    ]
+)
+def test_process_input_data_parametrized_parent_path_long_in_parent_dir_returns_valid_path(parent_path: str):
+    input_data = InputData(
+        tree_input='src/\n  file.py',
+        parent_path=parent_path,
+    )
+    result = list(process_input_data(input_data))
+    assert len(result) == 1
+    assert result[0] in ['../project/module/main/src/file.py', '..\\project\\module\\main\\src\\file.py']
 
 
 def test_process_input_data_two_files_returns_valid_paths():
