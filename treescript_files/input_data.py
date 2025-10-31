@@ -50,9 +50,10 @@ def validate_arguments(argument_data: ArgumentData) -> InputData:
             raise ValueError('ParentPath Prefix Argument Too Long.')
         # Prevent Invalid Dir Slash Combinations
         if (slash_char := validate_slash_char(path_prefix)) is not None:
-            if slash_char != str(Path('a/b'))[1]:
-                #todo: Store the result in InputData. version 0.3 or later.
-                print("Warning: Your ParentPath Argument's PathSeparator does not match the OS.")
+            # if slash_char != str(Path('a/b'))[1]:
+                # ParentPath Argument's PathSeparator does not match the OS.
+                # todo: Store the result in InputData. version 0.3 or later.
+            pass # This is handled by Validation Part 2.
         elif len(path_prefix.strip()) < 1:
             path_prefix = None
     return InputData(
